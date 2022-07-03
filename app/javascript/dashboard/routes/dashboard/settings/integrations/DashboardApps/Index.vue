@@ -4,7 +4,7 @@
       color-scheme="success"
       class-names="button--fixed-right-top"
       icon="add-circle"
-      @click="toggleDashboardAppPopup"
+      @click="openDashboardAppPopup"
     >
       {{ $t('INTEGRATION_SETTINGS.DASHBOARD_APPS.HEADER_BTN_TXT') }}
     </woot-button>
@@ -58,7 +58,7 @@
       :show="showDashboardAppPopup"
       :mode="mode"
       :selected-app-data="selectedApp"
-      @close="toggleDashboardAppPopup"
+      @close="closeDashboardAppPopup"
     />
 
     <woot-delete-modal
@@ -108,8 +108,13 @@ export default {
     this.$store.dispatch('dashboardApps/get');
   },
   methods: {
-    toggleDashboardAppPopup() {
-      this.showDashboardAppPopup = !this.showDashboardAppPopup;
+    openDashboardAppPopup() {
+      this.mode = 'CREATE';
+      this.showDashboardAppPopup = true;
+    },
+    closeDashboardAppPopup() {
+      this.mode = 'CREATE';
+      this.showDashboardAppPopup = false;
     },
     openDeletePopup(response) {
       this.showDeleteConfirmationPopup = true;

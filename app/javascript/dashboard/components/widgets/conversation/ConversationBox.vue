@@ -6,19 +6,28 @@
       :is-contact-panel-open="isContactPanelOpen"
       @contact-panel-toggle="onToggleContactPanel"
     />
-    <woot-tabs
-      v-if="dashboardApps.length && currentChat.id"
-      :index="activeIndex"
-      class="dashboard-app--tabs"
-      @change="onDashboardAppTabChange"
-    >
-      <woot-tabs-item
-        v-for="tab in dashboardAppTabs"
-        :key="tab.key"
-        :name="tab.name"
-        :show-badge="false"
-      />
-    </woot-tabs>
+    <div class="tabs-container">
+      <button class="tab-scroll-button scroll-left" @click="slide('left')">
+        <fluent-icon icon="chevron-left" size="16" />
+      </button>
+      <woot-tabs
+        v-if="dashboardApps.length && currentChat.id"
+        ref="dashboardAppsTabs"
+        :index="activeIndex"
+        class="dashboard-app--tabs"
+        @change="onDashboardAppTabChange"
+      >
+        <woot-tabs-item
+          v-for="tab in dashboardAppTabs"
+          :key="tab.key"
+          :name="tab.name"
+          :show-badge="false"
+        />
+      </woot-tabs>
+      <button class="tab-scroll-button scroll-right" @click="slide('right')">
+        <fluent-icon icon="chevron-right" size="16" />
+      </button>
+    </div>
     <div v-if="!activeIndex" class="messages-and-sidebar">
       <messages-view
         v-if="currentChat.id"
@@ -123,6 +132,22 @@ export default {
     onDashboardAppTabChange(index) {
       this.activeIndex = index;
     },
+    slide(direction) {
+      var container = this.$refs.dashboardAppsTabs;
+      let scrollCompleted = 0;
+      // eslint-disable-next-line func-names
+      var slideVar = setInterval(function() {
+        if (direction === 'left') {
+          container.scrollLeft -= 10;
+        } else {
+          container.scrollLeft += 10;
+        }
+        scrollCompleted += 10;
+        if (scrollCompleted >= 100) {
+          window.clearInterval(slideVar);
+        }
+      }, 5);
+    },
   },
 };
 </script>
@@ -141,6 +166,43 @@ export default {
 .dashboard-app--tabs {
   background: var(--white);
   margin-top: -1px;
+  flex-shrink: 0;
+  display: flex;
+  overflow-x: auto;
+  padding: 1px 2.4rem;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  .tabs-title {
+    flex-shrink: 0;
+  }
+}
+
+.tabs-container {
+  position: relative;
+  .tab-scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 100%;
+    padding: 0 0.5rem;
+    background-color: #fff;
+  }
+  .scroll-left {
+    left: 0;
+    z-index: 999999999999999999;
+  }
+  .scroll-right {
+    right: 0;
+    z-index: 999999999999999999;
+    &:before {
+      content: '';
+      background: linear-gradient(to left, #fff 20%, rgba(33, 33, 33, 0) 80%);
+      height: 38px;
+      width: 10px;
+      pointer-events: none;
+    }
+  }
 }
 
 .messages-and-sidebar {
