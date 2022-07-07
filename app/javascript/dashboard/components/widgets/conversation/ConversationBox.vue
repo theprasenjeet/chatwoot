@@ -6,7 +6,7 @@
       :is-contact-panel-open="isContactPanelOpen"
       @contact-panel-toggle="onToggleContactPanel"
     />
-    <div class="tabs-container">
+    <div v-if="currentChat.id" class="tabs-container">
       <button class="tab-scroll-button scroll-left" @click="slide('left')">
         <fluent-icon icon="chevron-left" size="16" />
       </button>
@@ -133,10 +133,10 @@ export default {
       this.activeIndex = index;
     },
     slide(direction) {
-      var container = this.$refs.dashboardAppsTabs;
+      let container = this.$refs.dashboardAppsTabs;
       let scrollCompleted = 0;
-      // eslint-disable-next-line func-names
-      var slideVar = setInterval(function() {
+      // // eslint-disable-next-line func-names
+      const slideVar = setInterval(() => {
         if (direction === 'left') {
           container.scrollLeft -= 10;
         } else {
@@ -168,7 +168,7 @@ export default {
   margin-top: -1px;
   flex-shrink: 0;
   display: flex;
-  overflow-x: auto;
+  overflow-x: scroll;
   padding: 1px 2.4rem;
   &::-webkit-scrollbar {
     display: none;
